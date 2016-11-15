@@ -16,7 +16,7 @@ def main():
     # Read arguments
     module = AnsibleModule(
         argument_spec = dict(
-            state   = dict(default='present', choices=['present', 'abcent']),
+            state   = dict(default='present', choices=['present', 'absent']),
             src     = dict(required=True),
             dest    = dict(required=False),
             logdir  = dict(required=False)
@@ -46,7 +46,7 @@ def main():
         # Module finished
         module.exit_json(changed=True, msg="IBM IM installed successfully")
 
-    if state == 'abcent':
+    if state == 'absent':
         uninstall_dir = "/var/ibm/InstallationManager/uninstall/uninstallc"
         if not os.path.exists("/var/ibm/InstallationManager/uninstall/uninstallc"):
             module.fail_json(msg=uninstall_dir + " does not exist")

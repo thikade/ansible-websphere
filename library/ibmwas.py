@@ -32,12 +32,12 @@ def main():
     # Read arguments
     module = AnsibleModule(
         argument_spec = dict(
-            state     = dict(default='present', choices=['present', 'abcent']),
+            state     = dict(default='present', choices=['present', 'absent']),
             ibmim     = dict(required=True),
             dest      = dict(required=True),
             im_shared = dict(required=False),
             repo      = dict(required=False),
-            offering  = dict(default='com.ibm.websphere.ND.v85', choices=offerings),
+            offering  = dict(default='com.ibm.websphere.ND.v85'),
             ihs_port  = dict(default=8080),
             logdir    = dict(required=False)
         )
@@ -66,7 +66,7 @@ def main():
         module.exit_json(changed=True, msg="WAS ND installed successfully", stdout=stdout_value)
 
     # Uninstall
-    if state == 'abcent':
+    if state == 'absent':
         if not os.path.exists(logdir):
             if not os.listdir(logdir):
                 os.makedirs(logdir)
