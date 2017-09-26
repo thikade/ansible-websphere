@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 #
 # Author: Amir Mofasser <amir.mofasser@gmail.com>
 #
@@ -108,7 +107,7 @@ def getVersion(dest, offering):
 
 
 	# Build the command to execute in order to get version information
-	# Start by checking for specific product offering since some IBM products differ in 
+	# Start by checking for specific product offering since some IBM products differ in
 	# how to get version information.
 	if "com.ibm.websphere.liberty".lower() in offering.lower():
 		# Liberty uses productInfo to return version number of the product
@@ -125,7 +124,7 @@ def getVersion(dest, offering):
 				if match.group(0) in d:
 					if os.path.isfile("{0}/{1}/bin/java".format(dest, d)):
 						versioncmd = "java -version"
-						wasversion = "java"	
+						wasversion = "java"
 						versionpwd = "{0}/{1}/bin/".format(dest, d)
 						installed = True
 	else:
@@ -144,7 +143,7 @@ def getVersion(dest, offering):
 	)
 
 	stdout_value, stderr_value = child.communicate()
-		
+
 	was_dict["check_stdout"] = stdout_value
 	was_dict["check_stderr"] = stderr_value
 
@@ -197,10 +196,10 @@ def main():
 	# Check if paths are valid
 	if not os.path.exists("{0}/eclipse".format(ibmim)):
 		module.fail_json(msg="{0}/eclipse not found. Make sure IBM Installation Manager is installed and that ibmim is pointing to correct directory.".format(ibmim))
-	
+
 	# Install
 	if state == 'present':
-		
+
 		if module.check_mode:
 			module.exit_json(changed=False, msg="WebSphere Application Server is to be installed at {0}".format(dest))
 
@@ -210,48 +209,48 @@ def main():
 			child = subprocess.Popen(
 				["{0}/eclipse/tools/imcl install {1} "
 				 "-repositories {2} "
-				 "-installationDirectory {3} " 
+				 "-installationDirectory {3} "
 				 "-sharedResourcesDirectory {4} "
 				 "-properties user.ihs.httpPort={5} "
 				 "-showProgress "
 				 "-acceptLicense "
-				 "-stopBlockingProcesses".format(ibmim, offering, repo, dest, im_shared, str(ihs_port))], 
-				shell=True, 
-				stdout=subprocess.PIPE, 
+				 "-stopBlockingProcesses".format(ibmim, offering, repo, dest, im_shared, str(ihs_port))],
+				shell=True,
+				stdout=subprocess.PIPE,
 				stderr=subprocess.PIPE
 			)
 			stdout_value, stderr_value = child.communicate()
 			if child.returncode != 0:
 				module.fail_json(
-					changed=False, 
-					msg="WebSphere Application Server installation failed", 
-					stdout=stdout_value, 
+					changed=False,
+					msg="WebSphere Application Server installation failed",
+					stdout=stdout_value,
 					stderr=stderr_value
 				)
 
 			# After install, get versionInfo so that we can show it to the user
 			getVersion(dest, offering)
 			module.exit_json(
-				changed=True, 
-				msg="WAS ND installed successfully", 
-				stdout=stdout_value, 
+				changed=True,
+				msg="WAS ND installed successfully",
+				stdout=stdout_value,
 				stderr=stderr_value,
-				was_name=getItem("was_name"), 
-				was_version=getItem("was_version"), 
-				was_id=getItem("was_id"), 
-				was_arch=getItem("was_arch"), 
+				was_name=getItem("was_name"),
+				was_version=getItem("was_version"),
+				was_id=getItem("was_id"),
+				was_arch=getItem("was_arch"),
 				was_installed=getItem("was_installed")
 			)
 		else:
 			module.exit_json(
-				changed=False, 
-				msg="WebSphere Application Server is already installed", 
+				changed=False,
+				msg="WebSphere Application Server is already installed",
 				stdout=getItem("check_stdout"),
 				stderr=getItem("check_stderr"),
-				was_name=getItem("was_name"), 
-				was_version=getItem("was_version"), 
-				was_id=getItem("was_id"), 
-				was_arch=getItem("was_arch"), 
+				was_name=getItem("was_name"),
+				was_version=getItem("was_version"),
+				was_id=getItem("was_id"),
+				was_arch=getItem("was_arch"),
 				was_installed=getItem("was_installed")
 			)
 
@@ -263,12 +262,12 @@ def main():
 
 		# Check wether was is installed
 		if isProvisioned(dest, offering):
-			
+
 			child = subprocess.Popen(
 				["{0}/eclipse/tools/imcl uninstall {1} "
-				 "-installationDirectory {2}".format(ibmim, offering, dest)], 
-				shell=True, 
-				stdout=subprocess.PIPE, 
+				 "-installationDirectory {2}".format(ibmim, offering, dest)],
+				shell=True,
+				stdout=subprocess.PIPE,
 				stderr=subprocess.PIPE
 			)
 			stdout_value, stderr_value = child.communicate()
