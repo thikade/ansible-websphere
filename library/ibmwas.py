@@ -37,7 +37,7 @@ def main():
             dest      = dict(required=True),
             im_shared = dict(required=False),
             repo      = dict(required=False),
-            offering  = dict(default='com.ibm.websphere.ND.v85', choices=offerings),
+            offering  = dict(default='com.ibm.websphere.ND.v85'),
             ihs_port  = dict(default=8080),
             logdir    = dict(required=False)
         )
